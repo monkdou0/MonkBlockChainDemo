@@ -1,0 +1,167 @@
+# MonkBlockChainDemo
+
+## 项目背景
+
+此项目作者为MonkDou, 项目背景为北京大学研一课程区块链理论与技术要求实现一个简单的挖矿模拟程序。
+
+---
+
+
+
+## monkBlockchain概述
+
+monkBlockChain基本设计情况与bitcoin相同，有一点关键区别为共识机制上面，区块链采取的是最长链为准原则，MonkBlockChain按照作业要求，**采用的是当两个矿工同时挖出同一高度的区块，那么以hash值小的区块为准**。
+
+---
+
+
+
+## monkBlockChain运行
+
+直接运行main.py即可
+
+1. 本程序可以模拟多个矿工（数量不限）进行竞争挖矿。可以通过设置参数来调整挖矿的速度，主要参数有两个，第一个是**挖矿难度**（BLockchain的difficulty 参数），第二个是矿工本身的**挖矿间隔时间**（挖矿速度，Miner的timeDelta参数），挖矿难度越大，挖矿间隔时间越长（速度越慢），出块速度越慢，越难以出现两个miner同时挖到一个高度区块的情况
+
+2. 如果需要增加矿工数量，则按照main.py中的样式，构建minerThread即可
+
+3. 本程序打印信息有两部分，第一部分是在控制台输出，当某一矿工挖矿成功时，显示类似
+
+   **bingo! miner3 在第85次尝试后成功挖到20号区块**
+
+   当某一矿工挖到同一高度区块，并且hash值小的时候，显示类似
+
+   **woo! miner2 因为计算hash值小抢得了20号区块**
+
+4. 本程序显示第二部分为LogThread线程负责每十秒钟【参数可以调节】更新一次全局区块链信息并打印到log.txt, 显示demo见本文最后Appendix
+
+   ---
+
+   
+
+## monkBlockChain设计思路
+
+monkBlockChain程序主要文件有5个，文件详情如下：
+
+1. **BlockChain.py**  包含两个类Block和类BlockChain. Block代表的单一区块，BlockChain代表区块链。
+2. **Miner.py**   矿工类，包含矿工挖矿程序，特别需要说明的是，**我们假定所有矿工均为全节点矿工，本地都存有一份完整的本地区块链信息**
+3. **Util.py**  主要是工具函数类
+4. **Transaction.py** 交易类
+5. **Main.py**  用多线程来模拟挖矿主程序的实现
+
+程序设计思路需要特别声明的是，**本程序为了模拟真实区块链的P2P通信，利用一个globalChain来存储区块链的全局权威信息，各个miner本地存储一份本地区块链信息，每次挖矿都需要查询globalChain,从而实现节点之间的同步和通信**。
+
+---
+
+
+
+
+
+## TODO
+
+**本程序已经实现的包括：**
+
+1. 区块链的创建
+2. 多矿工模拟挖矿
+3. POW实现
+4. 区块链共识实现
+
+**后续需要完善部分：**
+
+1. P2P通信
+2. 区块链交易池
+3. 用户钱包与公私钥
+4. 区块链奖励动态调整
+5. ........
+
+---
+
+
+
+## Reference
+
+1. 本项目架构和部分类的设计借鉴了https://github.com/shiwenwen/BlockChainSimpleDemo
+2. 本项目部分类的设计思想借鉴了 A Blockchain in a Python Code of 50 lines: https://medium.com/crypto-currently/lets-build-the- tiniest-blockchain-e70965a248b
+3. 本项目比特币理论部分主要查阅了精通比特币（第二版） http://v1.8btc.com/books/834/masterbitcoin2cn/_book/trans-preface.html
+
+----
+
+
+
+## Appendix
+
+**控制台输出**
+
+```
+bingo! miner2 在第3次尝试后成功挖到1号区块
+bingo! miner1 在第18次尝试后成功挖到2号区块
+bingo! miner1 在第35次尝试后成功挖到3号区块
+bingo! miner2 在第40次尝试后成功挖到4号区块
+bingo! miner1 在第50次尝试后成功挖到5号区块
+bingo! miner3 在第51次尝试后成功挖到6号区块
+bingo! miner1 在第55次尝试后成功挖到7号区块
+bingo! miner1 在第57次尝试后成功挖到8号区块
+bingo! miner2 在第57次尝试后成功挖到8号区块
+woo! miner2 因为计算hash值小抢得了8号区块
+bingo! miner3 在第63次尝试后成功挖到9号区块
+bingo! miner2 在第65次尝试后成功挖到10号区块
+bingo! miner2 在第66次尝试后成功挖到11号区块
+bingo! miner3 在第73次尝试后成功挖到12号区块
+bingo! miner3 在第74次尝试后成功挖到13号区块
+bingo! miner3 在第76次尝试后成功挖到14号区块
+bingo! miner1 在第82次尝试后成功挖到15号区块
+bingo! miner3 在第83次尝试后成功挖到16号区块
+bingo! miner1 在第84次尝试后成功挖到16号区块
+woo! miner1 因为计算hash值小抢得了16号区块
+bingo! miner1 在第91次尝试后成功挖到17号区块
+bingo! miner3 在第92次尝试后成功挖到18号区块
+bingo! miner3 在第127次尝试后成功挖到19号区块
+bingo! miner2 在第135次尝试后成功挖到20号区块
+bingo! miner1 在第149次尝试后成功挖到21号区块
+bingo! miner3 在第154次尝试后成功挖到22号区块
+bingo! miner3 在第157次尝试后成功挖到23号区块
+bingo! miner3 在第158次尝试后成功挖到24号区块
+bingo! miner3 在第160次尝试后成功挖到25号区块
+```
+
+
+
+**全局区块链信息**
+
+```
+index:0 minerID0 previous_hash:df5d917b54707a716d9bf3d64e3626d9e3e611527972d51907fdc49f05b4c17a hash:03fffe50191acd4e06e8f7f24fceb870d63ed4cfffd1ca9dddb6bce1240e3b20 timestamp:1601481600.0
+index:1 minerID2 previous_hash:03fffe50191acd4e06e8f7f24fceb870d63ed4cfffd1ca9dddb6bce1240e3b20 hash:0192a113d63c11acbd8b3b819844ee56b8850773e641380070a1b73cb9acb327 timestamp:1602140854.0
+index:2 minerID1 previous_hash:0192a113d63c11acbd8b3b819844ee56b8850773e641380070a1b73cb9acb327 hash:04d10d9dc6d9b33c721e7322a39d64e792829127ad4778a3e0e2e9013417adc7 timestamp:1602140869.0
+index:3 minerID1 previous_hash:04d10d9dc6d9b33c721e7322a39d64e792829127ad4778a3e0e2e9013417adc7 hash:0cf0bab14ed325c710637d3986c9c51a6f64dee4a851f45ab46f921342a355e2 timestamp:1602140886.0
+index:4 minerID2 previous_hash:0cf0bab14ed325c710637d3986c9c51a6f64dee4a851f45ab46f921342a355e2 hash:015eb72df7c2491f47d537a474e1aaacc728c44e1a9018dd440d27022a6b03fc timestamp:1602140891.0
+index:5 minerID1 previous_hash:015eb72df7c2491f47d537a474e1aaacc728c44e1a9018dd440d27022a6b03fc hash:0434b5827852ea97153e52db6f692d043867c90f1306f8f5becf9e0ab6c8d129 timestamp:1602140901.0
+index:6 minerID3 previous_hash:0434b5827852ea97153e52db6f692d043867c90f1306f8f5becf9e0ab6c8d129 hash:0ef6d55a224ca761cb4780aef1619a1ed937fa020b5eb3cbb5bcc4a1fbf1a30d timestamp:1602140902.0
+index:7 minerID1 previous_hash:0ef6d55a224ca761cb4780aef1619a1ed937fa020b5eb3cbb5bcc4a1fbf1a30d hash:025bcc4169855fa8097ff18b9071ded6339bbe355877f540ce8508cef6fab536 timestamp:1602140906.0
+index:8 minerID2 previous_hash:025bcc4169855fa8097ff18b9071ded6339bbe355877f540ce8508cef6fab536 hash:07de90a9e3801698ec4f51631d7a21b7a8c1fff71c9f8329906e72994ac07160 timestamp:1602140908.0
+index:9 minerID3 previous_hash:07de90a9e3801698ec4f51631d7a21b7a8c1fff71c9f8329906e72994ac07160 hash:0e43af7c7d2241ba0a6b1180924b8588c8534c49d66758d110ae099ab39d0578 timestamp:1602140914.0
+index:10 minerID2 previous_hash:0e43af7c7d2241ba0a6b1180924b8588c8534c49d66758d110ae099ab39d0578 hash:0104d723629345882b0c6b9ce9c56571df1cf2b37666c9d7e54d0fffdac19feb timestamp:1602140916.0
+index:11 minerID2 previous_hash:0104d723629345882b0c6b9ce9c56571df1cf2b37666c9d7e54d0fffdac19feb hash:0a8581b197324bf9ba1bb5bbeab5ccdd61dbbe65f9d2c62a795bbe522b02704f timestamp:1602140917.0
+index:12 minerID3 previous_hash:0a8581b197324bf9ba1bb5bbeab5ccdd61dbbe65f9d2c62a795bbe522b02704f hash:083a83b5fc27a352bfe89098373e6b977202030dfb09a7b8d7df90ebde3551f9 timestamp:1602140924.0
+index:13 minerID3 previous_hash:083a83b5fc27a352bfe89098373e6b977202030dfb09a7b8d7df90ebde3551f9 hash:01c30ff7de29a647e0bc0e96dc995f62b8aaa73f136b6becfd882a9027f443bd timestamp:1602140925.0
+index:14 minerID3 previous_hash:01c30ff7de29a647e0bc0e96dc995f62b8aaa73f136b6becfd882a9027f443bd hash:0c40776836f5e45c2c7f08a9434c187db5ade9e1932e678aebdf484613514325 timestamp:1602140927.0
+index:15 minerID1 previous_hash:0c40776836f5e45c2c7f08a9434c187db5ade9e1932e678aebdf484613514325 hash:050b77f5eb1ba56fd35d94dbf53c606b836b0bdebe9bf0512136273dca9d313a timestamp:1602140933.0
+index:16 minerID1 previous_hash:050b77f5eb1ba56fd35d94dbf53c606b836b0bdebe9bf0512136273dca9d313a hash:02868c9d018de0115680cc3391ab95606f97aa9682153e67fd175ba0fee6443b timestamp:1602140935.0
+index:17 minerID1 previous_hash:02868c9d018de0115680cc3391ab95606f97aa9682153e67fd175ba0fee6443b hash:05bc81a2e473c069cef4bb8953d1c2d67a7e06e22ee6910beab1c724a1f4fb47 timestamp:1602140942.0
+index:18 minerID3 previous_hash:05bc81a2e473c069cef4bb8953d1c2d67a7e06e22ee6910beab1c724a1f4fb47 hash:003d25fd0a22f78d8dcedf4460bae3e81df7b5238e8fadecab2060e10561ea58 timestamp:1602140943.0
+index:19 minerID3 previous_hash:003d25fd0a22f78d8dcedf4460bae3e81df7b5238e8fadecab2060e10561ea58 hash:003744e5a2749b7f9b6afb4c20e9cea76233c7e2b2728edab42ec945eb1d6133 timestamp:1602140978.0
+index:20 minerID2 previous_hash:003744e5a2749b7f9b6afb4c20e9cea76233c7e2b2728edab42ec945eb1d6133 hash:0ac341eb518e3206c3395eaa18c537f3ae507c90620e1ed6ee8f220dce39de85 timestamp:1602140986.0
+index:21 minerID1 previous_hash:0ac341eb518e3206c3395eaa18c537f3ae507c90620e1ed6ee8f220dce39de85 hash:0423bda01b39474fdf6b94ca730539d5cafd4f707a4d9e004f77518492f17e2a timestamp:1602141000.0
+index:22 minerID3 previous_hash:0423bda01b39474fdf6b94ca730539d5cafd4f707a4d9e004f77518492f17e2a hash:050cff72b776e15e908f0c7a6e299ec205b40d65931519a3bf6eb9989b273e3e timestamp:1602141005.0
+index:23 minerID3 previous_hash:050cff72b776e15e908f0c7a6e299ec205b40d65931519a3bf6eb9989b273e3e hash:0c47761e1da5ec5c699c790ed1ace3c0ee387015592379aa49cb1e8ff94bee71 timestamp:1602141008.0
+index:24 minerID3 previous_hash:0c47761e1da5ec5c699c790ed1ace3c0ee387015592379aa49cb1e8ff94bee71 hash:01d6db422836a05fad9b57bbd692c1a5734ff935327d95bf17feb5c2917634bf timestamp:1602141009.0
+index:25 minerID3 previous_hash:01d6db422836a05fad9b57bbd692c1a5734ff935327d95bf17feb5c2917634bf hash:08cb42879f4f26242a4643c570deb6770bb42a9bd299692385b1da715dd813c7 timestamp:1602141011.0
+index:26 minerID2 previous_hash:08cb42879f4f26242a4643c570deb6770bb42a9bd299692385b1da715dd813c7 hash:08ce8a52ceb8de0e69cbf26a7d22c21bfc20be6924771a2a6af8c2e6b108d24f timestamp:1602141014.0
+index:27 minerID3 previous_hash:08ce8a52ceb8de0e69cbf26a7d22c21bfc20be6924771a2a6af8c2e6b108d24f hash:0303f7e27301e8eabf7f3a44aa1af903b2ef02e55562fd935b42f351b3b8d925 timestamp:1602141018.0
+index:28 minerID1 previous_hash:0303f7e27301e8eabf7f3a44aa1af903b2ef02e55562fd935b42f351b3b8d925 hash:07ace1cf4023952ecb85a8e41401c0714fb0f8df4347b7b0b71f3b7713f85705 timestamp:1602141027.0
+index:29 minerID3 previous_hash:07ace1cf4023952ecb85a8e41401c0714fb0f8df4347b7b0b71f3b7713f85705 hash:0025d43ba1e2cedf149aec6cd5dd251554e3cdc89debaf3f968b4b1e1e90e708 timestamp:1602141030.0
+index:30 minerID1 previous_hash:0025d43ba1e2cedf149aec6cd5dd251554e3cdc89debaf3f968b4b1e1e90e708 hash:0fa936b5acfe2807ed6f09e39be7ab649fe28ce46a5f4d7c10b1f5fe226675b0 timestamp:1602141045.0
+index:31 minerID3 previous_hash:0fa936b5acfe2807ed6f09e39be7ab649fe28ce46a5f4d7c10b1f5fe226675b0 hash:0f220dd274d72aef83688ac35d2b1a8be1b895a5ecb92df41520ae6cf3aaef99 timestamp:1602141047.0
+
+```
+
+
+
